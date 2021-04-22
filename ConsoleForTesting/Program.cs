@@ -9,22 +9,22 @@ namespace ConsoleForTesting
     {
         static void Main(string[] args)
         {
-            MatrixModelForTesting matrixModelForTesting = new MatrixModelForTesting(5, 5);
+            Matrix matrix = new Matrix(3, 3);
 
-            for (int i = 0; i < matrixModelForTesting.NumberOfColumns; i++)
+            for (int i = 0; i < matrix.NumberOfColumns; i++)
             {
-                for (int j = 0; j < matrixModelForTesting.NumberOfRows; j++)
+                for (int j = 0; j < matrix.NumberOfRows; j++)
                 {
-                    if (i == j)
-                    {
-                        matrixModelForTesting.EditMatrix(i, j, 1);
-                    }
+                    matrix.EditMatrix(i, j, i * j);
                 }
             }
 
-            Console.WriteLine(matrixModelForTesting.ToString());
+            Console.WriteLine(matrix.ToString());
 
-            Console.WriteLine(matrixModelForTesting.Determinant());
+            for (int i = 0; i < matrix.NumberOfColumns; i++)
+            {
+                Console.WriteLine(matrix.FindMatrixMinor(i, 0));
+            }
 
             Console.ReadKey();
         }
