@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Authors>Byron Lloyd - Wakeman</Authors>
+    <Description>A dependancy of the MatrixLibrary, Custom exceptions used for handling matrix related errors</Description>
+    <Copyright>MIT</Copyright>
+    <PackageReleaseNotes>Various new exceptions have been added to correspond to the new changes with v1.1</PackageReleaseNotes>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Authors>Byron Lloyd - Wakeman</Authors>
+    <Description>A Library with a Matrix model which can be used as a data type</Description>
+    <Copyright>MIT</Copyright>
+    <PackageReleaseNotes>If this has gone smoothly (unlikely) this is the second release, 2by2 and 3by3 matrix determinants have been added and matricies can now be multiplied</PackageReleaseNotes>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MatrixExceptions\MatrixExceptions.csproj" />
+  </ItemGroup>
+
+</Project>
