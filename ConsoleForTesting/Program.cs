@@ -11,20 +11,26 @@ namespace ConsoleForTesting
         {
             Matrix matrix = new Matrix(3, 3);
 
-            for (int i = 0; i < matrix.NumberOfColumns; i++)
-            {
-                for (int j = 0; j < matrix.NumberOfRows; j++)
-                {
-                    matrix.EditMatrix(i, j, i * j);
-                }
-            }
+            matrix.EditMatrix(0, 0, 4);
+            matrix.EditMatrix(1, 0, 3);
+            matrix.EditMatrix(2, 0, -1);
+            matrix.EditMatrix(0, 1, 2);
+            matrix.EditMatrix(1, 1, -2);
+            matrix.EditMatrix(2, 1, 0);
+            matrix.EditMatrix(0, 2, 0);
+            matrix.EditMatrix(1, 2, 4);
+            matrix.EditMatrix(2, 2, -2);
 
             Console.WriteLine(matrix.ToString());
 
-            for (int i = 0; i < matrix.NumberOfColumns; i++)
-            {
-                Console.WriteLine(matrix.FindMatrixMinor(i, 0));
-            }
+            //for (int i = 0; i < matrix.NumberOfColumns; i++)
+            //{
+            //    Console.WriteLine(matrix.FindMatrixMinor(i, 0));
+            //}
+
+            Console.WriteLine(matrix.FindDeterminant());
+
+
 
             Console.ReadKey();
         }

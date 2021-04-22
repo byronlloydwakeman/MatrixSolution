@@ -132,56 +132,12 @@ namespace MatrixLibrary
             }
         }
 
-        public static int Find2by2Determinant(Matrix m) //Private
+        public int Find2by2Determinant() //Private
         {
             //Make sure given matrix is 2by2
-            IsMatrix2by2(m.NumberOfRows, m.NumberOfColumns);
+            IsMatrix2by2(NumberOfRows, NumberOfColumns);
 
-            return (m.DataValues[0] * m.DataValues[3]) - (m.DataValues[1] * m.DataValues[2]);
-        }
-
-        public static void IsMatrix3by3(int NumberOfRows, int NumberOfColumns)
-        {
-            if ((NumberOfColumns != 3) || (NumberOfColumns != 3))
-            {
-                throw new DeterminantDimensionError(NumberOfColumns, NumberOfRows);
-            }
-        }
-
-        public static int Find3by3Determinant(Matrix m)
-        {
-            IsMatrix3by3(m.NumberOfRows, m.NumberOfColumns);
-
-            //Setup three matrix minors and pass them through to the find 2by2 determinant
-            Matrix MatrixMinor1 = new Matrix(2, 2);
-            MatrixMinor1.DataValues[0] = m.DataValues[4];
-            MatrixMinor1.DataValues[1] = m.DataValues[5];
-            MatrixMinor1.DataValues[2] = m.DataValues[7];
-            MatrixMinor1.DataValues[3] = m.DataValues[8];
-
-            Matrix MatrixMinor2 = new Matrix(2, 2);
-            MatrixMinor2.DataValues[0] = m.DataValues[3];
-            MatrixMinor2.DataValues[1] = m.DataValues[5];
-            MatrixMinor2.DataValues[2] = m.DataValues[6];
-            MatrixMinor2.DataValues[3] = m.DataValues[8];
-
-            Matrix MatrixMinor3 = new Matrix(2, 2);
-            MatrixMinor3.DataValues[0] = m.DataValues[3];
-            MatrixMinor3.DataValues[1] = m.DataValues[4];
-            MatrixMinor3.DataValues[2] = m.DataValues[6];
-            MatrixMinor3.DataValues[3] = m.DataValues[7];
-
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            int a = m.DataValues[0] * Find2by2Determinant(MatrixMinor1);
-
-            int b = m.DataValues[1] * Find2by2Determinant(MatrixMinor2);
-
-            int c = m.DataValues[2] * Find2by2Determinant(MatrixMinor3);
-            stopwatch.Stop();
-            Console.WriteLine($"Time elapsed : {stopwatch.ElapsedMilliseconds}");
-
-            return a - b + c;
+            return (DataValues[0] * DataValues[3]) - (DataValues[1] * DataValues[2]);
         }
 
         /// <summary>
@@ -215,6 +171,35 @@ namespace MatrixLibrary
             return MatrixMinor;
         }
         
+        public int FindDeterminant()
+        {
+            //If matrix is 1by1
+            if (NumberOfColumns == 1)
+            {
+                return DataValues[0];
+            }
+
+            //If matrix is 2by2
+            if (NumberOfColumns == 2)
+            {
+                return this.Find2by2Determinant();
+            }
+
+            int sum = 0;
+
+            //If not
+
+            //Loop through columns
+            for (int i = 0; i < NumberOfColumns; i++)
+            {
+                //Loop through each column and find the matrix minor for the first row
+                int multiplier = i % 2 == 0 ? 1 : -1;
+
+                sum += multiplier * DataValues[i] * FindMatrixMinor(i, 0).FindDeterminant();
+            }
+
+            return sum;
+        }
 
         public override string ToString()
         {
