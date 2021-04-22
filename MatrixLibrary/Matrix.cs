@@ -10,7 +10,7 @@ namespace MatrixLibrary
 {
     public class Matrix
     {
-        private List<int> DataValues { get; } = new List<int>();
+        private List<int> DataValues { get; set; } = new List<int>();
         public int NumberOfColumns { get; }
         public int NumberOfRows { get; }
 
@@ -182,6 +182,37 @@ namespace MatrixLibrary
             Console.WriteLine($"Time elapsed : {stopwatch.ElapsedMilliseconds}");
 
             return a - b + c;
+        }
+
+        /// <summary>
+        /// Returns the matrix minor of this matrix
+        /// </summary>
+        public Matrix FindMatrixMinor(int ColumnIndex, int RowIndex)
+        {
+            //Create instance to return
+            Matrix MatrixMinor = new Matrix(NumberOfColumns - 1, NumberOfRows - 1);
+
+            int MatrixMinorCounter = 0;
+
+            //Loop through rows
+            for (int rI = 0; rI < NumberOfRows; rI++)
+            {
+                //Loop through columns
+                for (int cI = 0; cI < NumberOfColumns; cI++)
+                {
+                    if ((cI == ColumnIndex) || (rI == RowIndex))
+                    {
+                        //Ignore
+                    }
+                    else
+                    {
+                        MatrixMinor.DataValues[MatrixMinorCounter] = DataValues[OldMatrixIndexToNewMatrixIndex(cI, rI)];
+                        MatrixMinorCounter++;
+                    }
+                }
+            }
+
+            return MatrixMinor;
         }
         
 
