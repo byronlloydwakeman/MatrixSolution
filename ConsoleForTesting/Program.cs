@@ -11,15 +11,15 @@ namespace ConsoleForTesting
         {
             Matrix matrix = new Matrix(3, 3);
 
-            matrix.EditMatrix(0, 0, 4);
+            matrix.EditMatrix(0, 0, 1);
             matrix.EditMatrix(1, 0, 3);
-            matrix.EditMatrix(2, 0, -1);
-            matrix.EditMatrix(0, 1, 2);
-            matrix.EditMatrix(1, 1, -2);
-            matrix.EditMatrix(2, 1, 0);
-            matrix.EditMatrix(0, 2, 0);
-            matrix.EditMatrix(1, 2, 4);
-            matrix.EditMatrix(2, 2, -2);
+            matrix.EditMatrix(2, 0, 1);
+            matrix.EditMatrix(0, 1, 0);
+            matrix.EditMatrix(1, 1, 4);
+            matrix.EditMatrix(2, 1, 1);
+            matrix.EditMatrix(0, 2, 2);
+            matrix.EditMatrix(1, 2, -1);
+            matrix.EditMatrix(2, 2, 0);
 
             Console.WriteLine(matrix.ToString());
 
@@ -30,7 +30,9 @@ namespace ConsoleForTesting
 
             Console.WriteLine(matrix.FindDeterminant());
 
+            Console.WriteLine(matrix.FindInverse());
 
+            Console.WriteLine(matrix.FindTranspose());
 
             Console.ReadKey();
         }
