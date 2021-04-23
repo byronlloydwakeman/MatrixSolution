@@ -1,4 +1,5 @@
 ﻿using MatrixExceptions;
+using MatrixLibrary.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,12 +17,22 @@ namespace MatrixLibrary
 
         public Matrix(int NumberOfColumns, int NumberOfRows)
         {
+            //Check Columns and Rows are valid
+            if(!(MatrixInputValidation.IsNumberOfRowsValid(NumberOfRows)))
+            {
+                throw new InvalidNumberOfRowsException(NumberOfRows);
+            }
+            if(!(MatrixInputValidation.IsNumberOfColumnsValid(NumberOfColumns)))
+            {
+                throw new InvalidNumberOfColumnsException(NumberOfColumns);
+            }
+
             this.NumberOfColumns = NumberOfColumns;
             this.NumberOfRows = NumberOfRows;
             SetupEmptyMatrix();
         }
 
-        public void SetupEmptyMatrix()  //Private
+        private void SetupEmptyMatrix()  //Private
         {
             //The number of elements should be the product of the NumberOfRows and NumberOfColumns
             for (int i = 0; i < (NumberOfRows * NumberOfRows); i++)
@@ -30,120 +41,41 @@ namespace MatrixLibrary
             }
         }
 
-        /// <summary>
-        /// Returns the index required to access the data value from a single list
-        /// </summary>
-        /// <param name="ColumnIndex">The column index of the element we want</param>
-        /// <param name="RowIndex">The row index of the element we want</param>
-        /// <returns></returns>
-        public int OldMatrixIndexToNewMatrixIndex(int ColumnIndex, int RowIndex) //Private
+        private int OldMatrixIndexToNewMatrixIndex(int ColumnIndex, int RowIndex) //Private
         {
             return (NumberOfColumns * RowIndex) + ColumnIndex;
-        }
-
-        /// <summary>
-        /// As number of rows cant be negative or 0, we could also change this in the future to have a max limit
-        /// </summary>
-        public void IsNumberOfRowsValid(int NumberOfRows) //Private
-        {
-            if (NumberOfRows < 1)
-            {
-                throw new InvalidNumberOfRowsException(NumberOfRows);
-            }
-        }
-
-        /// <summary>
-        /// As number of columns can't be negative
-        /// </summary>
-        public void IsNumberOfColumnsValid(int NumberOfColumns) //Private
-        {
-            if (NumberOfColumns < 1)
-            {
-                throw new InvalidNumberOfColumnsException(NumberOfColumns);
-            }
-        }
-
-        /// <summary>
-        /// Throws an exception if the column index passed through isn't in range
-        /// </summary>
-        public void IsColumnInRange(int ColumnIndex) //Private
-        {
-            if ((ColumnIndex + 1) > NumberOfColumns || ColumnIndex < 0)
-            {
-                throw new ColumnIndexOutOfRangeException(ColumnIndex);
-            }
-        }
-
-        /// <summary>
-        /// Throws an exception if the row index passed through isnt in range
-        /// </summary>
-        public void IsRowInRange(int RowIndex) //Private
-        {
-            if ((RowIndex + 1) > NumberOfColumns || RowIndex < 0)
-            {
-                throw new RowIndexOutOfRangeException(RowIndex);
-            }
-        }
-
-        /// <summary>
-        /// Checks whether two matricies can perform basic arithmetic (addition, subtraction) passing the values through as their individual values as its more efficient than passing a
-        /// reference type through
-        /// </summary>
-        public static void CanMatriciesPerformBasicArithmetic(int ColumnNumber1, int ColumnNumber2, int RowNumber1, int RowNumber2) //Private
-        {
-            if (!((ColumnNumber1 == ColumnNumber2) && (RowNumber1 == RowNumber2)))
-            {
-                throw new BasicArithmeticDimensionException();
-            }
-        }
-
-        public static void CanMatriciesBeMultiplied(int RowNumber1, int ColumnNumber2) //Private
-        {
-            if (!(RowNumber1 == ColumnNumber2))
-            {
-                throw new MultiplicationDimensionError();
-            }
         }
 
         public void EditMatrix(int ColumnIndex, int RowIndex, int NewValue)
         {
             //Check the column and row index values are within range
-            IsColumnInRange(ColumnIndex);
-            IsRowInRange(RowIndex);
+            if(!(MatrixIndexValidation.IsColumnInRange(ColumnIndex, NumberOfColumns)))
+            {
+                throw new ColumnIndexOutOfRangeException(ColumnIndex);
+            }
+
+            if(!(MatrixIndexValidation.IsRowInRange(RowIndex, NumberOfRows)))
+            {
+                throw new RowIndexOutOfRangeException(RowIndex);
+            }
 
             //Find actual index
             int ActualIndex = OldMatrixIndexToNewMatrixIndex(ColumnIndex, RowIndex);
             DataValues[ActualIndex] = NewValue;
         }
 
-        public static void CanMatrixDeterminantBeFound(int NumberOfColumns, int NumberOfRows) //Private
-        {
-            if (NumberOfColumns != NumberOfRows)
-            {
-                throw new DeterminantDimensionError(NumberOfColumns, NumberOfRows);
-            }
-        }
-
-        public static void IsMatrix2by2(int NumberOfRows, int NumberOfColumns) //Private
-        {
-            if ((NumberOfRows != 2) || (NumberOfColumns != 2))
-            {
-                throw new DeterminantDimensionError(NumberOfColumns, NumberOfRows);
-            }
-        }
-
-        public int Find2by2Determinant() //Private
+        private int Find2by2Determinant() //Private
         {
             //Make sure given matrix is 2by2
-            IsMatrix2by2(NumberOfRows, NumberOfColumns);
+            if(!(MatrixSizeValidation.IsMatrix2by2(NumberOfRows, NumberOfColumns)))
+            {
+                throw new DeterminantDimensionError("Could not perform 2by2 determinant as matrix was not 2by2");
+            }
 
             return (DataValues[0] * DataValues[3]) - (DataValues[1] * DataValues[2]);
         }
 
-        /// <summary>
-        /// Returns the matrix minor of this matrix
-        /// </summary>
-        public Matrix FindMatrixMinor(int ColumnIndex, int RowIndex)
+        private Matrix FindMatrixMinor(int ColumnIndex, int RowIndex) //Private
         {
             //Create instance to return
             Matrix MatrixMinor = new Matrix(NumberOfColumns - 1, NumberOfRows - 1);
@@ -180,7 +112,7 @@ namespace MatrixLibrary
             }
 
             //If matrix is 2by2
-            if (NumberOfColumns == 2)
+            if (MatrixSizeValidation.IsMatrix2by2(NumberOfRows, NumberOfColumns))
             {
                 return this.Find2by2Determinant();
             }
@@ -280,11 +212,13 @@ namespace MatrixLibrary
             return StringToReturn;
         }
 
-
         public static Matrix operator +(Matrix m1, Matrix m2)
         {
             //Check whether m1 and m2 are compatible to be added
-            CanMatriciesPerformBasicArithmetic(m1.NumberOfColumns, m1.NumberOfRows, m2.NumberOfColumns, m2.NumberOfRows);
+            if(!(MatrixArithmeticValidation.CanMatriciesPerformBasicArithmetic(m1.NumberOfColumns, m1.NumberOfRows, m2.NumberOfColumns, m2.NumberOfRows)))
+            {
+                throw new BasicArithmeticDimensionException();
+            }
 
             Matrix matrixToReturn = new Matrix(m1.NumberOfColumns, m1.NumberOfRows);
 
@@ -300,7 +234,10 @@ namespace MatrixLibrary
         public static Matrix operator -(Matrix m1, Matrix m2)
         {
             //Check whether m1 and m2 are compatible to be subtracted
-            CanMatriciesPerformBasicArithmetic(m1.NumberOfColumns, m1.NumberOfRows, m2.NumberOfColumns, m2.NumberOfRows);
+            if(!(MatrixArithmeticValidation.CanMatriciesPerformBasicArithmetic(m1.NumberOfColumns, m1.NumberOfRows, m2.NumberOfColumns, m2.NumberOfRows)))
+            {
+                throw new BasicArithmeticDimensionException();
+            }
 
             Matrix matrixToReturn = new Matrix(m1.NumberOfColumns, m1.NumberOfRows);
 
@@ -316,8 +253,12 @@ namespace MatrixLibrary
         public static Matrix operator *(Matrix m1, Matrix m2)
         {
             Matrix matrixToReturn = new Matrix(m2.NumberOfColumns, m1.NumberOfRows);
+
             //Check whether matricies can be multiplied
-            CanMatriciesBeMultiplied(m1.NumberOfRows, m2.NumberOfColumns);
+            if(!(MatrixArithmeticValidation.CanMatriciesBeMultiplied(m1.NumberOfRows, m2.NumberOfColumns)))
+            {
+                throw new MultiplicationDimensionException();
+            }
 
             int indexCounter = -1;
             //Loop through m1 rows

@@ -13,6 +13,11 @@ namespace MatrixExceptions
 
         }
 
+        public DeterminantDimensionError(string Message) : base(String.Format(Message))
+        {
+
+        }
+
         public DeterminantDimensionError()
         {
 

@@ -1,5 +1,6 @@
 ﻿using MatrixExceptions;
 using MatrixLibrary;
+using MatrixLibrary.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,5 +73,7 @@ namespace MatrixLibraryTests
         //    Matrix.CheckMatrixDimensionAreValidForMultiplication(matrix.ColumnN, matrix2.RowN);
         //}
         #endregion
+
+
     }
 }
