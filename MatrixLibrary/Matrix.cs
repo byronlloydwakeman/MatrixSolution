@@ -171,7 +171,7 @@ namespace MatrixLibrary
             return MatrixMinor;
         }
         
-        public int FindDeterminant()
+        public double FindDeterminant()
         {
             //If matrix is 1by1
             if (NumberOfColumns == 1)
@@ -185,7 +185,7 @@ namespace MatrixLibrary
                 return this.Find2by2Determinant();
             }
 
-            int sum = 0;
+            double sum = 0;
 
             //If not
 
@@ -199,6 +199,64 @@ namespace MatrixLibrary
             }
 
             return sum;
+        }
+
+        public Matrix FindInverse()
+        {
+            Matrix ReturnMatrix = new Matrix(NumberOfColumns, NumberOfRows);
+
+            //Loop through every element and find its matrix minor
+            for (int cI = 0; cI < NumberOfColumns; cI++)
+            {
+                for (int rI = 0; rI < NumberOfRows; rI++)
+                {
+                    ReturnMatrix.DataValues[OldMatrixIndexToNewMatrixIndex(cI, rI)] = (int)FindMatrixMinor(cI, rI).FindDeterminant();
+                }
+            }
+
+            //Find the cofactor of the matrix
+            for (int i = 0; i < NumberOfColumns * NumberOfRows; i++)
+            {
+                if (i % 2 != 0)
+                {
+                    ReturnMatrix.DataValues[i] = ReturnMatrix.DataValues[i] * -1;
+                }
+            }
+
+            //Find Transpose
+
+            return ReturnMatrix;
+        }
+
+        public Matrix FindTranspose()
+        {
+            Matrix ReturnMatrix = new Matrix(NumberOfColumns, NumberOfRows);
+
+            //Getting a list of all the columns
+            List<List<int>> ListOfColumns = new List<List<int>>();
+
+            for (int cI = 0; cI < NumberOfColumns; cI++)
+            {
+                //Add a new instance of a list
+                ListOfColumns.Add(new List<int>());
+                for (int rI = 0; rI < NumberOfRows; rI++) //Loop through the rows of a given column and add each value to the list
+                {
+                    ListOfColumns[cI].Add(DataValues[OldMatrixIndexToNewMatrixIndex(cI, rI)]);
+                }
+            }
+
+            int IndexCounter = 0; 
+            //Loop through the columns
+            for (int i = 0; i < ListOfColumns.Count; i++)
+            {
+                for (int j = 0; j < ListOfColumns[i].Count; j++)
+                {
+                    ReturnMatrix.DataValues[IndexCounter] = ListOfColumns[i][j];
+                    IndexCounter++;
+                }
+            }
+
+            return ReturnMatrix;
         }
 
         public override string ToString()
