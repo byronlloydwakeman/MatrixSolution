@@ -32,8 +32,6 @@ namespace ConsoleForTesting
 
             Console.WriteLine(matrix.FindInverse());
 
-            Console.WriteLine(matrix.FindTranspose());
-
             Console.ReadKey();
         }
 

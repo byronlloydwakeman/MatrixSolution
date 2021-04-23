@@ -204,6 +204,7 @@ namespace MatrixLibrary
         public Matrix FindInverse()
         {
             Matrix ReturnMatrix = new Matrix(NumberOfColumns, NumberOfRows);
+            double Determinant = FindDeterminant();
 
             //Loop through every element and find its matrix minor
             for (int cI = 0; cI < NumberOfColumns; cI++)
@@ -224,8 +225,9 @@ namespace MatrixLibrary
             }
 
             //Find Transpose
+            ReturnMatrix = ReturnMatrix.FindTranspose();
 
-            return ReturnMatrix;
+            return (int)(1 / Determinant) * ReturnMatrix;
         }
 
         public Matrix FindTranspose()
