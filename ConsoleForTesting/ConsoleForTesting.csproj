@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="VectorLibrary" Version="1.0.1" />
+    <PackageReference Include="VectorMathLibrary" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MatrixLibraryTests\MatrixLibraryTests.csproj" />
     <ProjectReference Include="..\MatrixLibrary\MatrixLibrary.csproj" />
   </ItemGroup>

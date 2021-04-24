@@ -5,9 +5,14 @@
     <Authors>Byron Lloyd - Wakeman</Authors>
     <Description>A Library with a Matrix model which can be used as a data type</Description>
     <Copyright>MIT</Copyright>
-    <PackageReleaseNotes>If this has gone smoothly (unlikely) this is the second release, 2by2 and 3by3 matrix determinants have been added and matricies can now be multiplied</PackageReleaseNotes>
-    <Version>1.1.0</Version>
+    <PackageReleaseNotes>1.2.0 Release. Now implemented FindDeterminant and FindInverse methods which work on a square matrix of any size</PackageReleaseNotes>
+    <Version>1.2.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="VectorLibrary" Version="1.0.1" />
+    <PackageReference Include="VectorMathLibrary" Version="1.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MatrixExceptions\MatrixExceptions.csproj" />
