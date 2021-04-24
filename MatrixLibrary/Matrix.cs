@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VectorLibrary;
 
 namespace MatrixLibrary
 {
@@ -35,7 +36,7 @@ namespace MatrixLibrary
         private void SetupEmptyMatrix()  //Private
         {
             //The number of elements should be the product of the NumberOfRows and NumberOfColumns
-            for (int i = 0; i < (NumberOfRows * NumberOfRows); i++)
+            for (int i = 0; i < (NumberOfRows * NumberOfColumns); i++)
             {
                 DataValues.Add(0); //Add 0, effectively a null value
             }
@@ -100,6 +101,8 @@ namespace MatrixLibrary
                 }
             }
 
+            MatrixMinorCounter = 0; //reset its value
+
             return MatrixMinor;
         }
         
@@ -133,12 +136,7 @@ namespace MatrixLibrary
             return sum;
         }
 
-        private double AsyncHelperMethod(int i)
-        {
-            return Math.Pow(-1, i) * FindMatrixMinor(i, 0).FindDeterminant();
-        }
-
-        private async Task<double> FindAsyncDeterminant()
+        public async Task<double> FindAsyncDeterminant()
         {
             //If matrix is 1by1
             if (NumberOfColumns == 1)
@@ -157,10 +155,11 @@ namespace MatrixLibrary
             //Add tasks to the list
             for (int i = 0; i < NumberOfColumns; i++)
             {
-                ListOfTasks.Add(Task.Run(() => AsyncHelperMethod(i)));
+                ListOfTasks.Add(Task.Run(() => Math.Pow(-1, i) * FindMatrixMinor(i, 0).FindDeterminant()));
             }
 
             var result = await Task.WhenAll(ListOfTasks);
+
             double sum = 0;
 
             foreach (var item in result)
@@ -326,6 +325,19 @@ namespace MatrixLibrary
             }
 
             return matrixToReturn;
+        }
+
+        public static explicit operator Matrix(Vector vector)
+        {
+            List<int> VectorDataValues = vector.ReturnDataValues();
+            Matrix ReturnMatrix = new Matrix(1, VectorDataValues.Count);
+
+            for (int i = 0; i < VectorDataValues.Count; i++)
+            {
+                ReturnMatrix.DataValues[i] = VectorDataValues[i];
+            }
+
+            return ReturnMatrix;
         }
     }
 }

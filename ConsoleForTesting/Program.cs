@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using VectorLibrary;
 
 namespace ConsoleForTesting
 {
@@ -28,17 +29,22 @@ namespace ConsoleForTesting
             //    Console.WriteLine(matrix.FindMatrixMinor(i, 0));
             //}
 
+
             var watch = Stopwatch.StartNew();
             Console.WriteLine(matrix.FindDeterminant());
             //Console.WriteLine(matrix.FindInverse());
             watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            Console.WriteLine($"watch 1 : {watch.ElapsedMilliseconds}");
 
             //var watch2 = Stopwatch.StartNew();
             //Console.WriteLine(await matrix.FindAsyncDeterminant());
             ////Console.WriteLine(matrix.FindInverse());
             //watch2.Stop();
-            //Console.WriteLine(watch2.ElapsedMilliseconds);
+            //Console.WriteLine($"watch 2 : {watch2.ElapsedMilliseconds}");
+
+            Vector vector = new Vector(1, 1, 1);
+            Matrix VectorToMatrix = (Matrix)vector;
+
 
             Console.ReadKey();
         }
