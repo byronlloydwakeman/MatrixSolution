@@ -136,40 +136,6 @@ namespace MatrixLibrary
             return sum;
         }
 
-        public async Task<double> FindAsyncDeterminant()
-        {
-            //If matrix is 1by1
-            if (NumberOfColumns == 1)
-            {
-                return DataValues[0];
-            }
-
-            //If matrix is 2by2
-            if (MatrixSizeValidation.IsMatrix2by2(NumberOfRows, NumberOfColumns))
-            {
-                return this.Find2by2Determinant();
-            }
-
-            List<Task<double>> ListOfTasks = new List<Task<double>>();
-
-            //Add tasks to the list
-            for (int i = 0; i < NumberOfColumns; i++)
-            {
-                ListOfTasks.Add(Task.Run(() => Math.Pow(-1, i) * FindMatrixMinor(i, 0).FindDeterminant()));
-            }
-
-            var result = await Task.WhenAll(ListOfTasks);
-
-            double sum = 0;
-
-            foreach (var item in result)
-            {
-                sum += item;
-            }
-
-            return sum;
-        }
-
         public Matrix FindInverse()
         {
             Matrix ReturnMatrix = new Matrix(NumberOfColumns, NumberOfRows);
