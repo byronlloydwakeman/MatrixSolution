@@ -12,7 +12,7 @@ namespace MatrixLibrary
 {
     public class Matrix
     {
-        private List<int> DataValues { get; set; } = new List<int>();
+        private List<dynamic> DataValues { get; set; } = new List<dynamic>();
         public int NumberOfColumns { get; }
         public int NumberOfRows { get; }
 
@@ -47,7 +47,7 @@ namespace MatrixLibrary
             return (NumberOfColumns * RowIndex) + ColumnIndex;
         }
 
-        public void EditMatrix(int ColumnIndex, int RowIndex, int NewValue)
+        public void EditMatrix(int ColumnIndex, int RowIndex, dynamic NewValue)
         {
             //Check the column and row index values are within range
             if(!(MatrixIndexValidation.IsColumnInRange(ColumnIndex, NumberOfColumns)))
@@ -76,7 +76,7 @@ namespace MatrixLibrary
             return (DataValues[0] * DataValues[3]) - (DataValues[1] * DataValues[2]);
         }
 
-        private Matrix FindMatrixMinor(int ColumnIndex, int RowIndex) //Private
+        private Matrix FindMatrixMinor(int ColumnIndex, int RowIndex) //Private 
         {
             //Create instance to return
             Matrix MatrixMinor = new Matrix(NumberOfColumns - 1, NumberOfRows - 1);
@@ -108,6 +108,15 @@ namespace MatrixLibrary
         
         public double FindDeterminant()
         {
+            //Make sure the matrix is of a type which the determinant can be found on
+            for (int i = 0; i < DataValues.Count; i++)
+            {
+                if (!(MatrixTypeValidation.IsInteger(DataValues[i])))
+                {
+                    throw new InvalidMatrixTypeException();
+                }
+            }
+
             //If matrix is 1by1
             if (NumberOfColumns == 1)
             {
