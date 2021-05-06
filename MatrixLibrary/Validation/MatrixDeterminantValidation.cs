@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MatrixLibrary.Helpers
+namespace MatrixLibrary.Validation
 {
-    public static class MatrixSizeValidation
+    public static class MatrixDeterminantValidation
     {
-        public static bool IsMatrix2by2(int NumberOfRows, int NumberOfColumns) //Private
+        public static bool CanMatrixDeterminantBeFound(int NumberOfColumns, int NumberOfRows) //Private
         {
-            if ((NumberOfRows != 2) || (NumberOfColumns != 2))
+            if (NumberOfColumns != NumberOfRows)
             {
                 return false;
             }
@@ -19,5 +19,6 @@ namespace MatrixLibrary.Helpers
                 return true;
             }
         }
+
     }
 }

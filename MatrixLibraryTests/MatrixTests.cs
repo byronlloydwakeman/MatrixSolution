@@ -1,6 +1,6 @@
 ﻿using MatrixExceptions;
 using MatrixLibrary;
-using MatrixLibrary.Helpers;
+using MatrixLibrary.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

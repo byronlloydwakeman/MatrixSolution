@@ -5,8 +5,9 @@
     <Authors>Byron Lloyd - Wakeman</Authors>
     <Description>A Library with a Matrix model which can be used as a data type</Description>
     <Copyright>MIT</Copyright>
-    <PackageReleaseNotes>1.2.0 Release. Now implemented FindDeterminant and FindInverse methods which work on a square matrix of any size</PackageReleaseNotes>
-    <Version>1.2.0</Version>
+    <PackageReleaseNotes>Now Implemented an explicit converter in the Matrix class which converts a Vector type to a Matrix type.
+Also Implemented a MatrixTransformationFactory Class which returns matricies of given transformations</PackageReleaseNotes>
+    <Version>1.2.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
