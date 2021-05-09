@@ -6,17 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MatrixLibraryTests
+namespace MatrixLibraryTests.Validation
 {
-    public class MatrixSizeValidationTests
+    public class MatrixDeterminantValidationTests
     {
         [Theory]
         [InlineData(2, 2, true)]
         [InlineData(1, 2, false)]
         [InlineData(2, 1, false)]
-        public void IsMatrix2by2ShouldWork(int NumberOfRows, int NumberOfColumns, bool Expected)
+        public void CanMatrixDeterminantBeFoundShouldWork(int NumberOfColumns, int NumberOfRows, bool Expected)
         {
-            bool Actual = MatrixSizeValidation.IsMatrix2by2(NumberOfRows, NumberOfColumns);
+            bool Actual = MatrixDeterminantValidation.CanMatrixDeterminantBeFound(NumberOfColumns, NumberOfRows);
 
             Assert.Equal(Expected, Actual);
         }

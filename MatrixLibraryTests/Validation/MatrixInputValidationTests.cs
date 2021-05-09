@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MatrixLibraryTests
+namespace MatrixLibraryTests.Validation
 {
     public class MatrixInputValidationTests
     {
