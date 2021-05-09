@@ -1,5 +1,7 @@
 ﻿using MatrixExceptions;
-using MatrixLibrary.Helpers;
+using MatrixLibrary.Converters;
+using MatrixLibrary.Operations;
+using MatrixLibrary.Validation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,11 +44,6 @@ namespace MatrixLibrary
             }
         }
 
-        private int OldMatrixIndexToNewMatrixIndex(int ColumnIndex, int RowIndex) //Private
-        {
-            return (NumberOfColumns * RowIndex) + ColumnIndex;
-        }
-
         public void EditMatrix(int ColumnIndex, int RowIndex, int NewValue)
         {
             //Check the column and row index values are within range
@@ -61,79 +58,24 @@ namespace MatrixLibrary
             }
 
             //Find actual index
-            int ActualIndex = OldMatrixIndexToNewMatrixIndex(ColumnIndex, RowIndex);
+            int ActualIndex = MatrixIndexConverter.OldMatrixIndexToNewMatrixIndex(ColumnIndex, RowIndex, NumberOfColumns);
             DataValues[ActualIndex] = NewValue;
         }
 
-        private int Find2by2Determinant() //Private
+        public void EditMatrix(int Index, int NewValue)
         {
-            //Make sure given matrix is 2by2
-            if(!(MatrixSizeValidation.IsMatrix2by2(NumberOfRows, NumberOfColumns)))
+            if (!MatrixIndexValidation.IsDataIndexInRange(Index, NumberOfColumns, NumberOfRows))
             {
-                throw new DeterminantDimensionError("Could not perform 2by2 determinant as matrix was not 2by2");
+                throw new IndexOutOfRangeException("Given index is out of bounds");
             }
 
-            return (DataValues[0] * DataValues[3]) - (DataValues[1] * DataValues[2]);
-        }
+            DataValues[Index] = NewValue;
 
-        private Matrix FindMatrixMinor(int ColumnIndex, int RowIndex) //Private
-        {
-            //Create instance to return
-            Matrix MatrixMinor = new Matrix(NumberOfColumns - 1, NumberOfRows - 1);
-
-            int MatrixMinorCounter = 0;
-
-            //Loop through rows
-            for (int rI = 0; rI < NumberOfRows; rI++)
-            {
-                //Loop through columns
-                for (int cI = 0; cI < NumberOfColumns; cI++)
-                {
-                    if ((cI == ColumnIndex) || (rI == RowIndex))
-                    {
-                        //Ignore
-                    }
-                    else
-                    {
-                        MatrixMinor.DataValues[MatrixMinorCounter] = DataValues[OldMatrixIndexToNewMatrixIndex(cI, rI)];
-                        MatrixMinorCounter++;
-                    }
-                }
-            }
-
-            MatrixMinorCounter = 0; //reset its value
-
-            return MatrixMinor;
         }
         
         public double FindDeterminant()
         {
-            //If matrix is 1by1
-            if (NumberOfColumns == 1)
-            {
-                return DataValues[0];
-            }
-
-            //If matrix is 2by2
-            if (MatrixSizeValidation.IsMatrix2by2(NumberOfRows, NumberOfColumns))
-            {
-                return this.Find2by2Determinant();
-            }
-
-            double sum = 0;
-
-            //If not
-
-            //Loop through columns
-            for (int i = 0; i < NumberOfColumns; i++)
-            {
-                //Loop through each column and find the matrix minor for the first row
-                int multiplier = i % 2 == 0 ? 1 : -1;
-
-                sum += multiplier * DataValues[i] * FindMatrixMinor(i, 0).FindDeterminant();
-            }
-
-            return sum;
+            return Determinant.FindDeterminant(NumberOfColumns, NumberOfRows, DataValues);
         }
 
         public Matrix FindInverse()
@@ -146,7 +88,7 @@ namespace MatrixLibrary
             {
                 for (int rI = 0; rI < NumberOfRows; rI++)
                 {
-                    ReturnMatrix.DataValues[OldMatrixIndexToNewMatrixIndex(cI, rI)] = (int)FindMatrixMinor(cI, rI).FindDeterminant();
+                    ReturnMatrix.DataValues[MatrixIndexConverter.OldMatrixIndexToNewMatrixIndex(cI, rI, NumberOfColumns)] = (int)MatrixMinor.FindMatrixMinor(cI, rI, NumberOfColumns, NumberOfRows, DataValues).FindDeterminant();
                 }
             }
 
@@ -167,33 +109,7 @@ namespace MatrixLibrary
 
         public Matrix FindTranspose()
         {
-            Matrix ReturnMatrix = new Matrix(NumberOfColumns, NumberOfRows);
-
-            //Getting a list of all the columns
-            List<List<int>> ListOfColumns = new List<List<int>>();
-
-            for (int cI = 0; cI < NumberOfColumns; cI++)
-            {
-                //Add a new instance of a list
-                ListOfColumns.Add(new List<int>());
-                for (int rI = 0; rI < NumberOfRows; rI++) //Loop through the rows of a given column and add each value to the list
-                {
-                    ListOfColumns[cI].Add(DataValues[OldMatrixIndexToNewMatrixIndex(cI, rI)]);
-                }
-            }
-
-            int IndexCounter = 0; 
-            //Loop through the columns
-            for (int i = 0; i < ListOfColumns.Count; i++)
-            {
-                for (int j = 0; j < ListOfColumns[i].Count; j++)
-                {
-                    ReturnMatrix.DataValues[IndexCounter] = ListOfColumns[i][j];
-                    IndexCounter++;
-                }
-            }
-
-            return ReturnMatrix;
+             return Transpose.FindTranspose(NumberOfColumns, NumberOfRows, DataValues);
         }
 
         public override string ToString()
@@ -293,6 +209,53 @@ namespace MatrixLibrary
             return matrixToReturn;
         }
 
+        public static bool operator ==(Matrix m1, Matrix m2)
+        {
+            //Check matricies are the same size
+            if (!(MatrixArithmeticValidation.CanMatriciesPerformBasicArithmetic(m1.NumberOfColumns, m1.NumberOfRows, m2.NumberOfColumns, m2.NumberOfRows)))
+            {
+                throw new BasicArithmeticDimensionException();
+            }
+
+            bool output = true;
+
+            //Loop through data values if not equal then return false
+            for (int i = 0; i < m1.DataValues.Count; i++)
+            {
+                if(!(m1.DataValues[i] == m2.DataValues[i]))
+                {
+                    output = false;
+                }
+            }
+
+            return output;
+        }
+
+        public static bool operator !=(Matrix m1, Matrix m2)
+        {
+            //Check matricies are the same size
+            if (!(MatrixArithmeticValidation.CanMatriciesPerformBasicArithmetic(m1.NumberOfColumns, m1.NumberOfRows, m2.NumberOfColumns, m2.NumberOfRows)))
+            {
+                throw new BasicArithmeticDimensionException();
+            }
+
+            bool output = false;
+
+            //Loop through data values if not equal then return false
+            for (int i = 0; i < m1.DataValues.Count; i++)
+            {
+                if(!(m1.DataValues[i] == m2.DataValues[i]))
+                {
+                    output = true;
+                }
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Converts a Vector Type to a Matrix Type
+        /// </summary>
         public static explicit operator Matrix(Vector vector)
         {
             List<int> VectorDataValues = vector.ReturnDataValues();

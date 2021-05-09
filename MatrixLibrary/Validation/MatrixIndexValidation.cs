@@ -31,5 +31,17 @@ namespace MatrixLibrary.Validation
                 return true;
             }
         }
+
+        public static bool IsDataIndexInRange(int index, int numberOfColumns, int numberOfRows)
+        {
+            if (index < numberOfColumns * numberOfRows)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
